@@ -1,0 +1,17 @@
+{
+  "name": "activationking",
+  "owner": {
+    "name": "ActivationKing",
+    "url": "https://activationking.com"
+  },
+  "metadata": {
+    "description": "Official ActivationKing plugins for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "activationking",
+      "source": "./",
+      "description": "ActivationKing MCP server plus a skill for using it safely."
+    }
+  ]
+}

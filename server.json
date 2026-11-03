@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.activationking/activationking",
+  "title": "ActivationKing",
+  "description": "Your ActivationKing events, guest sessions, credits and Ops Calendar companies, jobs and deals.",
+  "websiteUrl": "https://api.activationking.com/docs",
+  "repository": {
+    "url": "https://github.com/activationking/activationking-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.activationking.com/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Personal ActivationKing API key, created at https://activationking.com/dashboard/api-keys",
+          "value": "Bearer {api_key}",
+          "isRequired": true,
+          "isSecret": true,
+          "variables": {
+            "api_key": {
+              "description": "API key starting with ak_live_",
+              "isRequired": true,
+              "isSecret": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

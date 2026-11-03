@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "activationking": {
+      "type": "http",
+      "url": "https://api.activationking.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACTIVATIONKING_API_KEY}"
+      }
+    }
+  }
+}

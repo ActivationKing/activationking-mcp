@@ -1,0 +1,13 @@
+{
+  "name": "activationking",
+  "version": "1.0.0",
+  "description": "Connect Claude Code to your ActivationKing account: events, guest sessions, credits and Ops Calendar companies, jobs and deals.",
+  "author": {
+    "name": "ActivationKing",
+    "url": "https://activationking.com"
+  },
+  "homepage": "https://api.activationking.com/docs",
+  "repository": "https://github.com/activationking/activationking-mcp",
+  "license": "MIT",
+  "keywords": ["activationking", "mcp", "events", "photo-booth", "crm", "ops-calendar"]
+}
