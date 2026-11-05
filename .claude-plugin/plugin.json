@@ -1,7 +1,7 @@
 {
   "name": "activationking",
-  "version": "1.0.0",
-  "description": "Connect Claude Code to your ActivationKing account: events, guest sessions, credits and Ops Calendar companies, jobs and deals.",
+  "version": "1.1.0",
+  "description": "Connect Claude Code to your ActivationKing account: events, guest sessions, credits, event settings, white label branding and Ops Calendar companies, jobs and deals.",
   "author": {
     "name": "ActivationKing",
     "url": "https://activationking.com"

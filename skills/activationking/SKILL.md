@@ -1,6 +1,6 @@
 ---
 name: activationking
-description: Use the ActivationKing MCP tools to read the user's events, guest sessions, stats and credits, and to read or write Ops Calendar companies, event jobs and deals (for example importing a deal from a CRM as an Ops job). Use when the user mentions ActivationKing, their events or sessions, AI credits, Ops Calendar, or wants to push jobs, clients or deals into Ops.
+description: Use the ActivationKing MCP tools to read the user's events, guest sessions, stats and credits, to read or change event settings (kiosk screen texts, colors, timings, AI and sharing options) and white label branding, and to read or write Ops Calendar companies, event jobs and deals (for example importing a deal from a CRM as an Ops job). Use when the user mentions ActivationKing, their events or sessions, AI credits, event or kiosk settings, white label or branding, Ops Calendar, or wants to push jobs, clients or deals into Ops.
 ---
 
 # ActivationKing
@@ -20,6 +20,22 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 - Credits: `get_credit_balance`.
 - Ops: `ops_list_companies`, `ops_get_company`, `ops_list_jobs` (optional `from`/`to` in UTC), `ops_get_job`, `ops_get_deal`.
 
+## Event settings
+
+- Call `get_settings_catalog` (with the event's app, e.g. `com.activationking.photobooth`) before any change. Use only keys from the catalog and values of the catalog type and range; never guess a key from its name.
+- Read the current values with `get_event_settings` (`isSet: false` = the kiosk uses the default) and show the user the old and new value of each key before writing.
+- **Confirm before `update_event_settings`.** Pass only the keys to change; `null` resets a key to its default. If any value is invalid the whole call is rejected (`invalid_setting`) and nothing is saved: fix the value and resend.
+- `settings_not_supported`: the event's app has no settings catalog yet (currently only Photo Booth has one).
+- The kiosk applies the change on its next sync, not instantly.
+
+## White label
+
+- `get_white_label` / `update_white_label` take an optional `app` (default `com.activationking.photobooth`). `Enabled`, `AppName` and `HidePromoSections` are per app; `MicrositeEnabled`, the colors and the texts are shared by all of the user's apps, so say so when changing them.
+- **Confirm before `update_white_label`**, listing old and new values. Pass only the fields to change.
+- Colors: `"#RRGGBB"` for solid, or `{color1, color2, color3, fillType: "Solid"|"Gradient", gradientType: "Linear"|"Radial", lineerGradientAngle}`. `null` clears a color or text.
+- Logos, background media and the custom domain can't be changed through the API; tell the user to change them in the app.
+- `403 white_label_not_allowed`: the user's plan doesn't include white label. Apps pick up changes within about 5 minutes.
+
 ## Writing to Ops Calendar
 
 - **Confirm before every write.** Summarize exactly what will be created, changed or deleted (organization, record, fields) and wait for the user's approval. Deletes are permanent: `ops_delete_job` also removes the job's deal, equipment assignments and comments.
@@ -33,9 +49,13 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 ## Errors
 
 - `401` / missing key: the `ACTIVATIONKING_API_KEY` environment variable is not set or the key was revoked. Keys are created at https://activationking.com/dashboard/api-keys.
-- `402`: the organization has no Ops Calendar subscription.
+- `400 invalid_setting`: a key or value doesn't match the settings catalog / white label fields; nothing was saved.
+- `400 settings_not_supported`: the event's app has no settings catalog.
+- `402`: no active subscription for the feature (e.g. the organization has no Ops Calendar subscription).
+- `403 white_label_not_allowed`: the plan doesn't include white label.
 - `403`: the user's role in that organization lacks the permission (e.g. Deal.View, Deal.Edit, Jobs.Create, Crm.EditBilling). Tell the user which permission is missing; don't retry.
 - `409 in_use`: the company is used by a job (see archiving above).
+- `409 conflict`: the record changed at the same time; read it again and retry once.
 - `429`: rate limit (300 requests/min per key). Wait for the `Retry-After` seconds and avoid fetching more pages than needed.
 
 Never print, log or ask the user to paste the API key into the conversation.
