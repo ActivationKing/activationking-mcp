@@ -2,13 +2,13 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.activationking/activationking",
   "title": "ActivationKing",
-  "description": "Your ActivationKing events, sessions, credits, event settings, white label and Ops Calendar jobs.",
+  "description": "ActivationKing events, sessions, credits, event settings, white label, booth remote control, Ops.",
   "websiteUrl": "https://api.activationking.com/docs",
   "repository": {
     "url": "https://github.com/activationking/activationking-mcp",
     "source": "github"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "remotes": [
     {
       "type": "streamable-http",

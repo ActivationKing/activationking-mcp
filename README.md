@@ -2,7 +2,7 @@
 
 Connect your AI assistant to your [ActivationKing](https://activationking.com) account.
 
-ActivationKing runs photo booths, AI experiences and games at live events. This MCP server lets an AI agent (Claude, Cursor, and other MCP clients) read **your own** ActivationKing data, change your **event settings** and **white label branding**, and manage your **Ops Calendar**: look up events and guest sessions, check credits, adjust a kiosk's screen texts, colors and timings, and create or update companies, event jobs and deals, for example to push a deal won in your CRM straight into Ops as a job.
+ActivationKing runs photo booths, AI experiences and games at live events. This MCP server lets an AI agent (Claude, Cursor, and other MCP clients) read **your own** ActivationKing data, change your **event settings** and **white label branding**, **remote-control your booths**, and manage your **Ops Calendar**: look up events and guest sessions, check credits, adjust a kiosk's screen texts, colors and timings, start, pause or drive a running booth and send it a photo, and create or update companies, event jobs and deals, for example to push a deal won in your CRM straight into Ops as a job.
 
 | | |
 |---|---|
@@ -106,6 +106,8 @@ Try prompts like:
 - "What's my AI credit balance?"
 - "On the *Summer Launch* photo booth, set the AI effect screen title to *Pick your style* and turn on surprise mode."
 - "Change my white label button color to #E4007C and the app name to *Acme Booth*."
+- "Which of my booths are online right now? Pause the one at *Summer Launch*."
+- "On the *Summer Launch* booth, start a photo session and send it this picture: https://example.com/photo.jpg"
 - "Create this CRM deal as an Ops job: client Acme, photo booth, 14–15 March in Berlin, price 2,400 EUR."
 - "Move the Acme job's deal to *Won* and add a line for an extra print station."
 
@@ -119,6 +121,7 @@ The authoritative, always up-to-date list with every parameter is in [llms.txt](
 | Events and sessions | `list_events`, `get_event`, `get_event_stats`, `list_event_sessions`, `get_session` |
 | Event settings | `get_settings_catalog`, `get_event_settings`, `update_event_settings` (writes) |
 | White label | `get_white_label`, `update_white_label` (writes) |
+| Remote control | `list_remote_booths`, `get_remote_booth`, `send_remote_command` (writes), `upload_remote_media` (writes) |
 | Ops Calendar (read) | `ops_reference_data`, `ops_list_companies`, `ops_get_company`, `ops_list_jobs`, `ops_get_job`, `ops_get_deal` |
 | Ops Calendar (write) | `ops_save_company`, `ops_save_job`, `ops_update_deal`, `ops_delete_company`, `ops_delete_job` |
 
@@ -135,6 +138,15 @@ How the white label tools work:
 - **Colors:** a hex string `#RRGGBB` for a solid color, or an object `{color1, color2, color3, fillType: Solid|Gradient, gradientType: Linear|Radial, lineerGradientAngle}` for a gradient. `null` clears a color or text.
 - Needs a plan that includes white label (`403 white_label_not_allowed` otherwise). Logos, background media and the custom domain are changed in the app, not through the API.
 - Apps pick up the change within about **5 minutes**.
+
+How the remote control tools work:
+
+- **Find the booth:** `list_remote_booths` lists your booths open for remote control (one row per booth and event) with `online`, `operatorEnabled` and the current screen.
+- **Read the screen first:** `get_remote_booth` returns what the booth shows right now: `actions` (`role: guest` = an on-screen button, `role: operator` = pause, resume, run…), `choices`, form `fields` with their allowed options, `mediaRequest` when it waits for a photo or video, a `countdown` and the `shareUrl` when there is one.
+- **Act on it:** `send_remote_command` runs one action from that screen as the operator and returns the next screen. For a choice use `actionId: "choice"` with `choiceId`; for a form use `actionId: "submitFields"` with `fields`. If the screen changed in the meantime the call is rejected with `stale_state`: read the screen again.
+- **Send media:** when the screen has a `mediaRequest` (for example after the `start_upload` action), `upload_remote_media` sends a photo or video by public `https` url or as base64, with its file extension (`.jpg`, `.png`, `.heic`, `.webp`, `.mp4`, `.mov`). Photos up to 50 MB, videos up to 250 MB. The booth uses it like a capture.
+- **Requirements:** only the account that runs the booth can control it (organization members can't). Operator control must be on for the event (`403 operator_disabled` otherwise) and the booth must be online (`409 booth_offline`).
+- The REST equivalents are under *Remote control* in the [OpenAPI](https://api.activationking.com/openapi/v1.json) (`/v1/remote/booths`).
 
 How the Ops tools work:
 
