@@ -62,7 +62,7 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 
 ## Errors
 
-- `401` / missing key: the `ACTIVATIONKING_API_KEY` environment variable is not set or the key was revoked. Keys are created at https://activationking.com/dashboard/api-keys.
+- `401` / missing key / the server shows as failed: the API key is missing, mistyped or revoked. With the Claude Code plugin the user fixes it with `/plugin configure activationking@activationking`; with other clients, in the client's MCP config (usually the `ACTIVATIONKING_API_KEY` environment variable). Keys are created at https://activationking.com/dashboard/api-keys.
 - `400 invalid_setting`: a key or value doesn't match the settings catalog / white label fields; nothing was saved.
 - `400 settings_not_supported`: the event's app has no settings catalog.
 - `403 operator_disabled`: operator control is off for the booth's event.

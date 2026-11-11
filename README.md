@@ -18,7 +18,7 @@ This repository holds the connection guide, a Claude Code plugin and the MCP Reg
 
 1. Sign in at [activationking.com/dashboard/api-keys](https://activationking.com/dashboard/api-keys).
 2. Create a key. It starts with `ak_live_` and is shown once.
-3. Store it as an environment variable rather than pasting it into config files:
+3. With the Claude Code plugin you paste the key during the install (see below). For the other clients, store it as an environment variable rather than pasting it into config files:
 
 ```bash
 # macOS / Linux
@@ -43,7 +43,12 @@ The plugin adds the server and a skill that teaches Claude how to use the tools 
 /plugin install activationking@activationking
 ```
 
-Make sure `ACTIVATIONKING_API_KEY` is set in the environment Claude Code starts from.
+During the install Claude Code asks for your **ActivationKing API key** (`ak_live_...`). It is stored in Claude Code's secure credential store, not in a config file, and no environment variable is needed. Restart Claude Code, then check `/mcp`: `plugin:activationking:activationking` should show as connected.
+
+- To change the key later: `/plugin configure activationking@activationking`.
+- From a terminal: `claude plugin install activationking@activationking --config api_key=ak_live_...` (or pipe `{"api_key":"ak_live_..."}` to `claude plugin configure activationking@activationking --values-stdin`).
+- Until a key is set the plugin's server is not started, so you won't see a sign-in prompt for it. If `/mcp` shows the server as failed, the key was revoked or mistyped: create a new one and run `/plugin configure` again.
+- Upgrading from plugin 1.2.x: the plugin no longer reads `ACTIVATIONKING_API_KEY`. Run `/plugin configure activationking@activationking` once and paste your key.
 
 ### Claude Code: server only
 

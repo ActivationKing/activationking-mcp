@@ -1,6 +1,6 @@
 {
   "name": "activationking",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Connect Claude Code to your ActivationKing account: events, guest sessions, credits, event settings, white label branding, booth remote control and Ops Calendar companies, jobs and deals.",
   "author": {
     "name": "ActivationKing",
@@ -9,5 +9,23 @@
   "homepage": "https://api.activationking.com/docs",
   "repository": "https://github.com/activationking/activationking-mcp",
   "license": "MIT",
-  "keywords": ["activationking", "mcp", "events", "photo-booth", "crm", "ops-calendar"]
+  "keywords": ["activationking", "mcp", "events", "photo-booth", "crm", "ops-calendar"],
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "ActivationKing API key",
+      "description": "Personal API key starting with ak_live_. Create one at https://activationking.com/dashboard/api-keys",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "activationking": {
+      "type": "http",
+      "url": "https://api.activationking.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${user_config.api_key}"
+      }
+    }
+  }
 }
