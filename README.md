@@ -8,13 +8,18 @@ ActivationKing runs photo booths, AI experiences and games at live events. This 
 |---|---|
 | Endpoint | `https://api.activationking.com/mcp` |
 | Transport | MCP Streamable HTTP (stateless) |
-| Auth | `Authorization: Bearer ak_live_...` (personal API key) |
+| Auth | Sign in with your ActivationKing account (OAuth 2.1, PKCE) **or** `Authorization: Bearer ak_live_...` (personal API key) |
 | Rate limit | 300 requests per minute per key |
 | Reference | [llms.txt](https://api.activationking.com/llms.txt) · [llms-full.txt](https://api.activationking.com/llms-full.txt) · [OpenAPI](https://api.activationking.com/openapi/v1.json) · [Interactive docs](https://api.activationking.com/docs) |
 
 This repository holds the connection guide, a Claude Code plugin and the MCP Registry manifest. The server itself is hosted by ActivationKing; there is nothing to install or run.
 
-## 1. Get an API key
+## 1. Choose how to sign in
+
+- **Claude (claude.ai, Claude Desktop, mobile) and ChatGPT:** no key needed. You add the server as a connector and sign in with your ActivationKing account; see [Claude: connector](#claude-claudeai-claude-desktop-mobile-connector).
+- **Claude Code, Cursor and other clients:** use a personal API key (below). Claude Code can also sign in with your account instead (see [Claude Code: server only](#claude-code-server-only)).
+
+### Get an API key
 
 1. Sign in at [activationking.com/dashboard/api-keys](https://activationking.com/dashboard/api-keys).
 2. Create a key. It starts with `ak_live_` and is shown once.
@@ -34,6 +39,18 @@ A key only sees the data of the user who created it. Ops Calendar tools addition
 
 ## 2. Connect your client
 
+### Claude (claude.ai, Claude Desktop, mobile): connector
+
+1. In Claude open **Customize > Connectors**, then **Add > Add custom connector**.
+2. Name: `ActivationKing`, MCP server URL: `https://api.activationking.com/mcp`, then **Continue**.
+3. Keep the detected settings (**Sign in now**, **Register automatically**) and click **Add**.
+4. Click **Connect**. activationking.com opens: sign in if asked, check the account shown and click **Connect & Continue**. You return to Claude with *Connected to ActivationKing*.
+5. Choose per tool whether Claude may use it without asking. Write tools (settings, white label, booth commands, Ops) should stay on *Needs approval*.
+
+The connector is added to your Claude account, so it also works in Claude Desktop and the mobile apps. To disconnect, open the connector and click **Disconnect**. Access tokens last one hour and renew automatically for 30 days of use; after that Claude asks you to sign in again.
+
+On a Team or Enterprise plan an owner may have to add the connector for the organization first.
+
 ### Claude Code: plugin (recommended)
 
 The plugin adds the server and a skill that teaches Claude how to use the tools safely.
@@ -52,9 +69,18 @@ During the install Claude Code asks for your **ActivationKing API key** (`ak_liv
 
 ### Claude Code: server only
 
+Sign in with your ActivationKing account (no key):
+
 ```bash
-claude mcp add --transport http activationking https://api.activationking.com/mcp \
-  --header "Authorization: Bearer ${ACTIVATIONKING_API_KEY}"
+claude mcp add --transport http activationking https://api.activationking.com/mcp
+```
+
+Then run `/mcp` in Claude Code, pick `activationking` and choose **Authenticate**; your browser opens activationking.com to approve.
+
+Or with an API key:
+
+```bash
+claude mcp add --transport http activationking https://api.activationking.com/mcp   --header "Authorization: Bearer ${ACTIVATIONKING_API_KEY}"
 ```
 
 ### Cursor
@@ -74,9 +100,9 @@ claude mcp add --transport http activationking https://api.activationking.com/mc
 }
 ```
 
-### Claude Desktop
+### Claude Desktop (config file)
 
-Claude Desktop's config file starts local servers, so use the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge (requires Node.js). Edit `claude_desktop_config.json`:
+The connector above is the easiest way. If you prefer an API key in the config file: Claude Desktop's config file starts local servers, so use the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge (requires Node.js). Edit `claude_desktop_config.json`:
 
 ```json
 {
@@ -100,7 +126,9 @@ Claude Desktop's config file starts local servers, so use the [`mcp-remote`](htt
 
 Any client that supports Streamable HTTP with a custom header works: point it at `https://api.activationking.com/mcp` and send `Authorization: Bearer <your key>`.
 
-> **Web connectors (claude.ai, ChatGPT):** these add remote servers through an OAuth sign-in. ActivationKing MCP currently authenticates with API keys only, so web connectors cannot connect yet. Use one of the clients above.
+### ChatGPT
+
+Add `https://api.activationking.com/mcp` as a custom connector (in ChatGPT's connector or developer mode settings, depending on your plan) and sign in with your ActivationKing account when asked.
 
 ## 3. What you can do
 
@@ -167,6 +195,7 @@ How the Ops tools work:
 
 ## Security
 
+- Connector sign-ins can be removed at any time by disconnecting the connector in your client.
 - Treat your API key like a password. Never commit it, paste it into shared configs or put it in a prompt.
 - Prefer environment variables (as in the examples above).
 - If a key leaks, revoke it at [activationking.com/dashboard/api-keys](https://activationking.com/dashboard/api-keys) and create a new one.

@@ -8,7 +8,7 @@
     "url": "https://github.com/activationking/activationking-mcp",
     "source": "github"
   },
-  "version": "1.3.0",
+  "version": "1.4.0",
   "remotes": [
     {
       "type": "streamable-http",
@@ -16,14 +16,14 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Personal ActivationKing API key, created at https://activationking.com/dashboard/api-keys",
+          "description": "Optional personal ActivationKing API key (https://activationking.com/dashboard/api-keys). Without it, clients sign in with OAuth.",
           "value": "Bearer {api_key}",
-          "isRequired": true,
+          "isRequired": false,
           "isSecret": true,
           "variables": {
             "api_key": {
               "description": "API key starting with ak_live_",
-              "isRequired": true,
+              "isRequired": false,
               "isSecret": true
             }
           }
