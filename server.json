@@ -8,7 +8,7 @@
     "url": "https://github.com/activationking/activationking-mcp",
     "source": "github"
   },
-  "version": "1.2.0",
+  "version": "1.2.2",
   "remotes": [
     {
       "type": "streamable-http",
