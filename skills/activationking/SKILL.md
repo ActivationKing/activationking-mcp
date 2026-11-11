@@ -64,7 +64,7 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 - `400 settings_not_supported`: the event's app has no settings catalog.
 - `403 operator_disabled`: operator control is off for the booth's event.
 - `409 booth_offline` / `booth_moved` / `not_waiting_for_media`: the booth is offline, moved to another event, or isn't asking for media; read the booth again.
-- `504 booth_timeout` / `502 booth_unreachable`: the booth didn't answer in time. Read the screen before trying again; the command may have run. If the screen (`stateVersion`) didn't change and a second try also times out, stop and tell the user the booth isn't responding (check that the app is open and connected; an old `lastUpdatedAt` is a hint) instead of retrying.
+- `504 booth_timeout` / `502 booth_unreachable`: the booth didn't answer in time. Read the screen before trying again; the command may have run. If the screen (`stateVersion`) didn't change and a second try also times out, stop and tell the user the booth isn't responding (check that the app is open, on the current release and connected to the live service; an old `lastUpdatedAt` is a hint) instead of retrying.
 - `400 invalid_file` / `wrong_media_type` / `upload_rejected`, `502 upload_failed`: the media file couldn't be used (bad url, wrong type for the request, too large).
 - `402`: no active subscription for the feature (e.g. the organization has no Ops Calendar subscription).
 - `403 white_label_not_allowed`: the plan doesn't include white label.
