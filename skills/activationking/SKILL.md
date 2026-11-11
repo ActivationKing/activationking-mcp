@@ -46,6 +46,7 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 - If the choices have no labels, don't pick one yourself: tell the user and let them choose by number or on the booth.
 - **Confirm before a command that starts, stops or changes a guest's session** (run, pause, a guest button) when a guest may be using the booth. Commands are not idempotent: don't resend a command just because the reply was slow; read the screen first.
 - Rejections (`accepted: false`): `stale_state` (the screen changed; read it again and decide anew), `action_not_available`, `not_allowed_for_role`, `screen_not_remotable` (this screen can't be driven remotely), `invalid_fields`.
+- When a session finishes the screen carries a `shareUrl` (`https://v3.activationshare.com/m/<sessionId>`). Its last path segment is the session id: call `get_session` with it to get the result photos/videos (`media`, `coverImageUrl`) and status.
 - `upload_remote_media` only works while the screen has a `mediaRequest` (e.g. after the `start_upload` action); check `mediaRequest.kind` (image or video), `total` / `received` and `maxVideoSeconds`. Pass a public `https` url or base64 data plus `fileExtension` (`.jpg`, `.png`, `.heic`, `.webp`, `.mp4`, `.mov`); photos up to 50 MB, videos up to 250 MB. Local or private-network urls are refused.
 
 ## Writing to Ops Calendar
