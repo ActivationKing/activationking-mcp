@@ -38,6 +38,7 @@ The `activationking` MCP server exposes the user's own ActivationKing data. Full
 
 ## Remote control (driving a live booth)
 
+- Fields whose value is `null` are left out of the replies (e.g. `sessionId`, `eventName`, `screenKey`): treat a missing field as `null`, not as an error.
 - `list_remote_booths` lists the booths open for remote control (one row per booth and event): `online`, `operatorEnabled`, current `screenKey` / `screenTitle`. `eventName` can be missing; use `eventId` with `get_event` to name the event for the user.
 - Only the account that runs the booth can control it. `operatorEnabled: false` means operator control is off for that event (`403 operator_disabled`); it is turned on in the booth app under Settings > Run > Remote Control > Operator control, with the event selected. `online: false` means commands and uploads fail with `409 booth_offline`; this also covers a booth app connected to another environment (for example a test build). Don't retry either; tell the user.
 - **Always call `get_remote_booth` right before `send_remote_command`** and use only an action id, choice id or field option from that screen; never guess one. `screenIsLive: false` means the booth is offline and the screen is the last one it reported.
